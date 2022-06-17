@@ -1,0 +1,40 @@
+{
+	"name": "mvccore/ext-translator-csv",
+	"type": "library",
+	"description": "MvcCore - Extension - Translator - CSV - simple CSV translator implementation.",
+	"keywords": [
+		"mvc",
+		"mvccore",
+		"framework",
+		"extension",
+		"plugin",
+		"plug-in",
+		"ext",
+		"translator",
+		"translate",
+		"simple",
+		"csv",
+		"file"
+	],
+	"license": ["BSD-3-Clause"],
+	"authors": [{
+		"name": "Tom Flidr",
+		"homepage": "https://github.com/tomFlidr"
+	}],
+	"require": {
+		"php": ">=5.4.0",
+		"mvccore/mvccore": "^5.0",
+		"mvccore/ext-translator": "^5.0"
+	},
+	"require-dev": {
+		"php": ">=5.4.0",
+		"nette/tester": "<=2.0",
+		"tomflidr/tracy": "<=2.5.13"
+	},
+	"autoload": {
+		"classmap": [
+			"src/"
+		]
+	},
+	"minimum-stability": "dev"
+}
