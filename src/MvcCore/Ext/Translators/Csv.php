@@ -30,7 +30,7 @@ implements	\MvcCore\Ext\ITranslator {
 	 * Comparison by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
-	const VERSION = '5.0.1';
+	const VERSION = '5.0.2';
 
 	/**
 	 * Relative path to directory with CSV translations, 
@@ -75,11 +75,15 @@ implements	\MvcCore\Ext\ITranslator {
 
 	/**
 	 * Load and parse CSV translation store from HDD.
-	 * @param  int|string|NULL Translation store id, optional.
+	 * @param  \int[]|\string[]|NULL $resourceIds,... Translation store resource id(s), optional.
 	 * @throws \Exception
 	 * @return array
 	 */
-	public function LoadStore ($id = NULL) {
+	public function LoadStore ($resourceIds = NULL) {
+		$args = func_get_args();
+		$resourceIds = is_array($args[0]) && count($args) === 1
+			? $args[0]
+			: $args;
 		$store = [];
 		$csvFullPath = $this->getCsvStoreFullPath();
 		if (!file_exists($csvFullPath)) {

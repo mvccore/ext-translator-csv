@@ -24,7 +24,7 @@
 	"require": {
 		"php": ">=5.4.0",
 		"mvccore/mvccore": "^5.0",
-		"mvccore/ext-translator": "^5.0"
+		"mvccore/ext-translator": "^5.0.1"
 	},
 	"require-dev": {
 		"php": ">=5.4.0",
