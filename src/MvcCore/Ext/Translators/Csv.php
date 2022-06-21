@@ -83,7 +83,7 @@ implements	\MvcCore\Ext\ITranslator {
 		$store = [];
 		$csvFullPath = $this->getCsvStoreFullPath();
 		if (!file_exists($csvFullPath)) {
-			if (!self::$writeTranslations)
+			if (!$this->writeTranslations)
 				trigger_error("No translations found in path: `{$csvFullPath}`.", E_USER_NOTICE);
 			return [];
 		} else {
@@ -115,6 +115,14 @@ implements	\MvcCore\Ext\ITranslator {
 		}
 		return $store;
 	}
+	
+	/**
+	 * Do not update anything in CSV.
+	 * @param  string $translationKey
+	 * @return void
+	 */
+	protected function updateUsedTranslation ($translationKey) {
+	}
 
 	/**
 	 * Append not translated keys into CSV store, for current 
@@ -122,7 +130,7 @@ implements	\MvcCore\Ext\ITranslator {
 	 * is closed, in `register_shutdown_function()` handler.
 	 * @return void
 	 */
-	protected function writeTranslations () {
+	protected function writeTranslationsHandler () {
 		$app = \MvcCore\Application::GetInstance();
 		$toolsClass = $app->GetToolClass();
 
