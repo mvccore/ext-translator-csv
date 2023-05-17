@@ -8,5 +8,5 @@ Simple CSV translator implementation.
 
 ## Installation
 ```shell
-composer require mvccore/translator-csv
+composer require mvccore/ext-translator-csv
 ```
