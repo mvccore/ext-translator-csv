@@ -41,6 +41,19 @@ implements	\MvcCore\Ext\ITranslator {
 	protected $dataDir = '~/Var/Translations';
 
 	/**
+	 * Escaped chars in source CSV.
+	 * Array contains two values. Each value represents `$replace_pairs` 
+	 * argument for function `strtr()`. First array item is used when translator
+	 * reads translation key and translated value from CSV, second array item
+	 * is used when translator writes new translation into CSV.
+	 * @var array{"0":array<string, string>,"1":array<string, string>}
+	 */
+	protected $escapeChars = [
+		["\\n" => "\n",  "\\t" => "\t"],
+		["\n"  => "\\n", "\t"  => "\\t"],
+	];
+
+	/**
 	 * Configure relative path to directory with CSV translations, 
 	 * relative to application root directory. 
 	 * Default value is `/Var/Translations`.
@@ -58,6 +71,38 @@ implements	\MvcCore\Ext\ITranslator {
 	 */
 	public function GetDataDir () {
 		return $this->dataDir;
+	}
+	
+	/**
+	 * Set characters to be escaped in CSV.
+	 * @param  array<string>|string $escapeChars
+	 * @return string
+	 */
+	public function SetEscapeChars ($escapeChars) {
+		if (is_array($escapeChars)) {
+			$chars = $escapeChars;
+		} else {
+			$chars = str_split($escapeChars);
+		}
+		$charsEscaped = [];
+		// ASCII OCT 0-37, 42("), 43(#), 73(;), 177-377
+		$characters = "\0..\37\42\43\73\177..\377";
+		foreach ($chars as $char) {
+			$charsEscaped[] = addcslashes($char, $characters); 
+		}
+		$this->escapeChars = [
+			array_combine($charsEscaped, $chars),
+			array_combine($chars, $charsEscaped)
+		];
+		return $this;
+	}
+
+	/**
+	 * Get characters to be escaped in CSV.
+	 * @return array<string>
+	 */
+	public function GetEscapeChars () {
+		return array_values($this->escapeChars[0]);
 	}
 	
 	/**
@@ -88,6 +133,7 @@ implements	\MvcCore\Ext\ITranslator {
 		} else {
 			$rawCsv = file_get_contents($csvFullPath);
 			$rawCsvRows = explode("\n", str_replace(["\r\n", "\r"], "\n", $rawCsv));
+			$escapeChars = $this->escapeChars[0];
 			foreach ($rawCsvRows as $rowKey => $rawCsvRow) {
 				if (!trim($rawCsvRow)) continue;
 				$keyAndValue = str_getcsv($rawCsvRow, ";", '');
@@ -95,6 +141,8 @@ implements	\MvcCore\Ext\ITranslator {
 					"Missing translation - line: `{$rowKey}`, localization: `{$this->localization}`."
 				);
 				list($key, $value) = $keyAndValue;
+				$key = strtr($key, $escapeChars);
+				$value = strtr($value, $escapeChars);
 				if (isset($store[$key])) {
 					$rowKey += 1;
 					self::thrownAnException(
@@ -114,7 +162,7 @@ implements	\MvcCore\Ext\ITranslator {
 		}
 		return $store;
 	}
-	
+
 	/**
 	 * Do not update anything in CSV.
 	 * @param  string $translationKey
@@ -140,8 +188,10 @@ implements	\MvcCore\Ext\ITranslator {
 		}
 
 		$newItems = [];
-		foreach (array_keys($this->newTranslations) as $newTranslation)
+		foreach (array_keys($this->newTranslations) as $newTranslation) {
+			$newTranslation = strtr($newTranslation, $this->escapeChars[1]);
 			$newItems[] = $newTranslation . ';' . static::NOT_TRANSLATED_KEY_MARK . $newTranslation;
+		}
 		$separator = mb_strlen($rawContent) > 0 ? "\n" : "";
 		
 		$toolsClass::AtomicWrite(
