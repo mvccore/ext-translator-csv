@@ -23,8 +23,8 @@
 	}],
 	"require": {
 		"php": ">=5.4.0",
-		"mvccore/mvccore": "^5.2.33",
-		"mvccore/ext-translator": "^5.2.6"
+		"mvccore/mvccore": "^5.3",
+		"mvccore/ext-translator": "^5.3"
 	},
 	"require-dev": {
 		"php": ">=5.4.0",
