@@ -61,7 +61,8 @@ implements	\MvcCore\Ext\ITranslator {
 	 * @return string
 	 */
 	public function SetDataDir ($dataDir) {
-		return $this->dataDir = $dataDir;
+		$this->dataDir = $dataDir;
+		return $this;
 	}
 
 	/**
@@ -113,7 +114,7 @@ implements	\MvcCore\Ext\ITranslator {
 		$dataDir = $this->dataDir;
 		if (mb_substr($dataDir, 0, 2) === '~/') {
 			$app = \MvcCore\Application::GetInstance();
-			$dataDir = $app->GetRequest()->GetAppRoot() . mb_substr($dataDir, 1);
+			$dataDir = $app->GetPathAppRoot() . mb_substr($dataDir, 1);
 		}
 		return $dataDir . '/' . $this->localization . '.csv';
 	}
