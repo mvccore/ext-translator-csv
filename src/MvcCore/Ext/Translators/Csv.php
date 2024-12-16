@@ -137,7 +137,7 @@ implements	\MvcCore\Ext\ITranslator {
 			$escapeChars = $this->escapeChars[0];
 			foreach ($rawCsvRows as $rowKey => $rawCsvRow) {
 				if (!trim($rawCsvRow)) continue;
-				$keyAndValue = str_getcsv($rawCsvRow, ";", '');
+				$keyAndValue = str_getcsv($rawCsvRow, ";", "\"", "\\");
 				if (count($keyAndValue) === 1) throw new \Exception(
 					"Missing translation - line: `{$rowKey}`, localization: `{$this->localization}`."
 				);
